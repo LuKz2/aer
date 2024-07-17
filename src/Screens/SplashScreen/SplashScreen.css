@@ -1,0 +1,26 @@
+.splash-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Preenche toda a altura da tela */
+    background-color: black;
+}
+
+.splash-screen img {
+    width: 150px; /* Ajuste o tamanho conforme necessário */
+    opacity: 0; /* Começa com opacidade zero */
+    animation: fadeInOut 2s ease-in-out 2 forwards; /* Define a animação para a logo */
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0; /* Começa com opacidade zero */
+    }
+    50% {
+        opacity: 1; /* Opacidade máxima no meio da animação */
+    }
+    100% {
+        opacity: 0; /* Mantém a opacidade máxima */
+    }
+}
