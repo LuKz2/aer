@@ -1,24 +1,25 @@
-import React, { useRef } from 'react'
-import { useGLTF, PerspectiveCamera } from '@react-three/drei'
-import * as THREE from 'three'; // Adicionando a importação do THREE
+import React from 'react';
+import { useGLTF, Environment } from '@react-three/drei';
+import * as THREE from 'three';
 
 export function Vitrine({ color }) {
-  const { nodes, materials } = useGLTF('/12.glb')
+  const { nodes, materials } = useGLTF('../Glb/12.glb');
 
+  // Função para modificar a cor dos materiais
   const modifyMaterialsColor = () => {
-    const blackMaterial = materials['black low gloss plastic']; // Substitua 'nome_do_seu_material_preto' pelo nome real do material preto no seu modelo
+    const blackMaterial = materials['black low gloss plastic']; // Ajuste de material
     blackMaterial.color = new THREE.Color(color);
   };
 
   modifyMaterialsColor();
 
+  // Calculando o centro do objeto para garantir que ele esteja centralizado
   const boundingBox = new THREE.Box3().setFromObject(nodes.Mesh_0);
   const center = boundingBox.getCenter(new THREE.Vector3());
 
   return (
-    <group position={[-center.x, -center.y, -center.z]}>
+    <group position={[-center.x-0.1, -center.y+0.2, -center.z]}> 
       <group>
-      
         <mesh
           castShadow
           receiveShadow
@@ -29,7 +30,7 @@ export function Vitrine({ color }) {
           castShadow
           receiveShadow
           geometry={nodes.Mesh_0_1.geometry}
-          material={materials['black low gloss plastic']} // 
+          material={materials['black low gloss plastic']}
         />
         <mesh
           castShadow
@@ -89,7 +90,7 @@ export function Vitrine({ color }) {
           castShadow
           receiveShadow
           geometry={nodes.Mesh_0_11.geometry}
-          material={materials['black low gloss plastic']}  //
+          material={materials['black low gloss plastic']}
         />
         <mesh
           castShadow
@@ -97,11 +98,9 @@ export function Vitrine({ color }) {
           geometry={nodes.Mesh_0_12.geometry}
           material={materials['white led']}
         />
-   
       </group>
-     
     </group>
-  )
+  );
 }
 
-useGLTF.preload('/12.glb')
+useGLTF.preload('../Glb/12.glb');

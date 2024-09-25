@@ -23,7 +23,7 @@ const Missao = () => {
           <div style={styles.textContainer}>
             <h1 style={styles.heading}>Missão</h1>
             <p style={styles.paragraph}>
-              Nossa missão é proporcionar serviços de alta qualidade e inovadores para nossos clientes, promovendo um ambiente sustentável e inclusive.
+              Nossa missão é proporcionar serviços de alta qualidade e inovadores para nossos clientes, promovendo um ambiente sustentável e inclusivo.
             </p>
           </div>
           <div
@@ -43,53 +43,195 @@ const Missao = () => {
       <main style={styles.main}>
         <h2 style={styles.subheading}>História e Marcos</h2>
         <VerticalTimeline>
+          {/* 1990 - 2000 */}
           <VerticalTimelineElement
             className="vertical-timeline-element--work"
             contentStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
             contentArrowStyle={{ borderRight: '7px solid  rgb(33, 150, 243)' }}
-            date="Janeiro 2020"
+            date="1990"
             iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
             icon={<FaStar />}
-            style={styles.timelineElement}
           >
-            <h3 className="vertical-timeline-element-title">Item A</h3>
-            <p>Desc</p>
+            <h3 className="vertical-timeline-element-title">Início das Atividades</h3>
+            <p>Assistência Técnica</p>
           </VerticalTimelineElement>
           <VerticalTimelineElement
             className="vertical-timeline-element--work"
             contentStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
             contentArrowStyle={{ borderRight: '7px solid  rgb(233, 30, 99)' }}
-            date="Junho 2021"
+            date="1994"
             iconStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
             icon={<FaRocket />}
-            style={styles.timelineElement}
           >
-            <h3 className="vertical-timeline-element-title">Item B</h3>
-            <p>Desc</p>
+            <h3 className="vertical-timeline-element-title">Câmara Frigorífica</h3>
+            <p>Em Painel Modular</p>
           </VerticalTimelineElement>
           <VerticalTimelineElement
             className="vertical-timeline-element--work"
             contentStyle={{ background: 'rgb(76, 175, 80)', color: '#fff' }}
             contentArrowStyle={{ borderRight: '7px solid  rgb(76, 175, 80)' }}
-            date="Março 2022"
+            date="1995"
             iconStyle={{ background: 'rgb(76, 175, 80)', color: '#fff' }}
             icon={<FaRegLightbulb />}
-            style={styles.timelineElement}
           >
-            <h3 className="vertical-timeline-element-title">Item C</h3>
-            <p>Desc</p>
+            <h3 className="vertical-timeline-element-title">Rack de Compressores</h3>
+            <p>Em Paralelo</p>
           </VerticalTimelineElement>
           <VerticalTimelineElement
             className="vertical-timeline-element--work"
             contentStyle={{ background: 'rgb(255, 152, 0)', color: '#fff' }}
             contentArrowStyle={{ borderRight: '7px solid  rgb(255, 152, 0)' }}
-            date="Dezembro 2022"
+            date="1998"
             iconStyle={{ background: 'rgb(255, 152, 0)', color: '#fff' }}
             icon={<FaAward />}
-            style={styles.timelineElement}
           >
-            <h3 className="vertical-timeline-element-title">Item D</h3>
-            <p>Desc</p>
+            <h3 className="vertical-timeline-element-title">Rack de Compressores</h3>
+            <p>Descarga Única, Sucção Dividida</p>
+          </VerticalTimelineElement>
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(233, 30, 99)' }}
+            date="1999"
+            iconStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
+            icon={<FaRocket />}
+          >
+            <h3 className="vertical-timeline-element-title">Sistema de Ultra Congelamento</h3>
+            <p>Contínuo</p>
+          </VerticalTimelineElement>
+
+          {/* 2000 - 2010 */}
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(33, 150, 243)' }}
+            date="2001"
+            iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
+            icon={<FaStar />}
+          >
+            <h3 className="vertical-timeline-element-title">Sistema de Refrigeração</h3>
+            <p>Em Cascata para Congelados</p>
+          </VerticalTimelineElement>
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(233, 30, 99)' }}
+            date="2002"
+            iconStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
+            icon={<FaRocket />}
+          >
+            <h3 className="vertical-timeline-element-title">Sistema de Monitoramento Remoto</h3>
+            <p>Para Refrigeração</p>
+          </VerticalTimelineElement>
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(76, 175, 80)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(76, 175, 80)' }}
+            date="2003"
+            iconStyle={{ background: 'rgb(76, 175, 80)', color: '#fff' }}
+            icon={<FaRegLightbulb />}
+          >
+            <h3 className="vertical-timeline-element-title">Sistema de Recuperação de Calor</h3>
+            <p>Água Quente</p>
+          </VerticalTimelineElement>
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(255, 152, 0)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(255, 152, 0)' }}
+            date="2006"
+            iconStyle={{ background: 'rgb(255, 152, 0)', color: '#fff' }}
+            icon={<FaAward />}
+          >
+            <h3 className="vertical-timeline-element-title">Refrigerador Vertical</h3>
+            <p>Com Portas de Vidro Duplo</p>
+          </VerticalTimelineElement>
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(233, 30, 99)' }}
+            date="2008"
+            iconStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
+            icon={<FaRocket />}
+          >
+            <h3 className="vertical-timeline-element-title">Refrigerador Modular Horizontal</h3>
+            <p>Com Portas de Vidro Duplo</p>
+          </VerticalTimelineElement>
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(76, 175, 80)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(76, 175, 80)' }}
+            date="2009"
+            iconStyle={{ background: 'rgb(76, 175, 80)', color: '#fff' }}
+            icon={<FaRegLightbulb />}
+          >
+            <h3 className="vertical-timeline-element-title">Expositor de Bolos Giratório</h3>
+            <p>Refrigerado/Congelado sem Divisória Térmica</p>
+          </VerticalTimelineElement>
+
+          {/* 2010 - 2020 */}
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(33, 150, 243)' }}
+            date="2011"
+            iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
+            icon={<FaStar />}
+          >
+            <h3 className="vertical-timeline-element-title">Sistema Hidronico Modular</h3>
+            <p>(Chiller)</p>
+          </VerticalTimelineElement>
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(233, 30, 99)' }}
+            date="2012"
+            iconStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
+            icon={<FaRocket />}
+          >
+            <h3 className="vertical-timeline-element-title">Linha de Vitrines Refrigeradas</h3>
+          </VerticalTimelineElement>
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(76, 175, 80)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(76, 175, 80)' }}
+            date="2016"
+            iconStyle={{ background: 'rgb(76, 175, 80)', color: '#fff' }}
+            icon={<FaRegLightbulb />}
+          >
+            <h3 className="vertical-timeline-element-title">Linha de Vitrines Refrigeradas</h3>
+          </VerticalTimelineElement>
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(255, 152, 0)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(255, 152, 0)' }}
+            date="2018"
+            iconStyle={{ background: 'rgb(255, 152, 0)', color: '#fff' }}
+            icon={<FaAward />}
+          >
+            <h3 className="vertical-timeline-element-title">Linha de Expositores e Vitrines</h3>
+            <p>Linha Leiria</p>
+          </VerticalTimelineElement>
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(233, 30, 99)' }}
+            date="2019"
+            iconStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
+            icon={<FaRocket />}
+          >
+            <h3 className="vertical-timeline-element-title">Linha de Mobiliário em Aço Inox</h3>
+            <p>Estampado Pré-Montado</p>
+          </VerticalTimelineElement>
+          <VerticalTimelineElement
+            className="vertical-timeline-element--work"
+            contentStyle={{ background: 'rgb(76, 175, 80)', color: '#fff' }}
+            contentArrowStyle={{ borderRight: '7px solid  rgb(76, 175, 80)' }}
+            date="2020"
+            iconStyle={{ background: 'rgb(76, 175, 80)', color: '#fff' }}
+            icon={<FaRegLightbulb />}
+          >
+            <h3 className="vertical-timeline-element-title">Vending Machine Via Moti/App</h3>
+            <p>Refrigerada e Seca</p>
           </VerticalTimelineElement>
         </VerticalTimeline>
       </main>
@@ -147,7 +289,6 @@ const styles = {
     padding: '20px',
     color: '#000',
     textAlign: 'left',
-  
   },
   imageContainer: {
     flex: 1,

@@ -9,6 +9,8 @@ import { ThemeProvider } from 'styled-components';
 import Equipe from './Screens/SobreNos/Equipe';
 import Missao from './Screens/SobreNos/Missao';
 import Parceiros from './Screens/SobreNos/Parceiros';
+import Contato from './components/Menu/Contato';
+import Servicos from './components/Menu/Servicos';
 
 const theme = {
   fontFamily: 'Montserrat, sans-serif', 
@@ -20,7 +22,7 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       setShowSplashScreen(false);
-    }, 3000);
+    }, 2000);
   }, []);
 
   return (
@@ -35,8 +37,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/product/:productName/:subProductName?" element={<ProductPage />} />
               <Route path="/equipe" element={<Equipe />} />
-              <Route path="/missao" element={<Missao />} />
-              <Route path="/parceiros" element={<Parceiros />} />
+              <Route path="/servicos" element={<Servicos />} />
+              <Route path="/contato" element={<Contato />} />
             </Routes>
           </ThemeProvider>
         </Router>

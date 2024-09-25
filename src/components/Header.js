@@ -27,6 +27,11 @@ const Header = () => {
   const [mediaTransitionVisible, setMediaTransitionVisible] = useState(false);
   const [showButton, setShowButton] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  // Estado para controlar a expansão dos subitens de "ACESSÓRIOS"
+  const [isAccessoriesExpanded, setIsAccessoriesExpanded] = useState(false);
+  const [isShelfExpanded, setIsShelfExpanded] = useState(false);
+
   const prod = useSelector(selectCars);
   const navigate = useNavigate();
   const hideTimeout = useRef(null);
@@ -34,35 +39,40 @@ const Header = () => {
   const submenuContainerRef = useRef(null);
 
   const media = {
-    0: '/images/videos/vitrine.mp4', // Vídeo para "PRODUTOS"
-    1: '/images/image/img1.jpg', // Imagem para "Item 1"
-    2: '/images/image/img2.jpg', // Imagem para "Sobre Nós"
-    3: '/images/image/img3.jpg', // Imagem para "Item 3"
+    0: '/images/videos/vitrine.mp4',
+    1: '/images/image/img1.jpg',
+    2: '/images/image/img2.jpg',
+    3: '/images/image/img3.jpg',
   };
 
   const subItems = {
     "PRODUTOS": {
-      'GABINETES': ['CÂMARA FRIA'],
-      'MÁQUINAS': ['AR CONDICIONADO', 'CHILLER'],
-      'BOX': ['BOX HZ', 'BOX VT', 'ESPECIAIS'],
+      'BALCÃO': ['BALCÃO PORTO HORIZONTAL', 'BALCÃO PORTO VERTICAL', 'ESPECIAIS'],
       'ESTANTES': ['DEPOSITO', 'HIGIENIZAÇÃO', 'ESTOCAGEM', 'CREMALHEIRAS'],
-      'EXPOSITORES': ['VITRINE', 'VISEU'],
-      'MOBILIÁRIO': ['MESA', 'BUFFET', 'MESA COM PIA', 'LAVADORA', 'LAVATORIO', 'PRATELEIRA', 'ACESSÓRIOS']
-    },
-    "ASSISTENCIA TÉCNICA": {
-      'SubItem 2.1': ['Acessar Sub Item A', 'Acessar Sub Item B', 'Acessar Sub Item C']
-    },
-    "SOBRE NÓS": {
-      'Nossa História': [
-        { name: 'Equipe', path: '/equipe' },
-        { name: 'Missão', path: '/missao' },
-        { name: 'Parceiros', path: '/parceiros' }
+      'VITRINES': ['VITRINE PORTO GALICIA', 'VITRINE PORTO PARIS'],
+      'EXPOSITORES': ['EXPOSITOR PORTO VISEU'],
+      'MOBILIÁRIO': [
+        'MESA',
+        'BUFFET',
+        'MESA COM PIA',
+        'LAVADORA',
+        'LAVATORIO',
+        {
+          name: 'PRATELEIRAS',
+          subItems: ['PRATELEIRA 1', 'PRATELEIRA 2', 'PRATELEIRA 3'] // Subitens dentro de "PRATELEIRA"
+        },
+        {
+          name: 'ACESSÓRIOS',
+          subItems: ['ACESSÓRIO 1', 'ACESSÓRIO 2', 'ACESSÓRIO 3'] // Subitens dentro de "ACESSÓRIOS"
+        }
       ]
     },
-    "Item 4": {
-      'SubItem 4.1': ['Subitem 4.1', 'Subitem 4.2', 'Subitem 4.3']
-    }
+    "SOBRE NÓS": {},
+    "SERVIÇOS": {},
+    "CONTATO": {}
   };
+
+
 
   const handleItemHover = (index) => {
     if (hideTimeout.current) {
@@ -94,20 +104,31 @@ const Header = () => {
     let timeout;
     if (fadeOut) {
       timeout = setTimeout(() => {
-        setCurrentMedia(nextMedia);
-        setFadeOut(false);
-        setFadeIn(true);
-      }, 200);
+        setCurrentMedia(nextMedia);  // Atualiza a mídia após o fade-out terminar
+        setFadeOut(false);  // Finaliza o fade-out
+        setFadeIn(true);  // Inicia o fade-in imediatamente
+      }, 200);  // Tempo para o fade-out (ajustado para 200ms)
     } else if (fadeIn) {
       timeout = setTimeout(() => {
-        setFadeIn(false);
-        if (!burgerStatus) {
-          setMediaTransitionVisible(false);
-        }
-      }, 200);
+        setFadeIn(false);  // Finaliza o fade-in após a nova mídia estar visível
+      }, 200);  // Tempo para o fade-in (ajustado para 200ms)
     }
     return () => clearTimeout(timeout);
   }, [fadeOut, fadeIn, nextMedia, burgerStatus]);
+
+  const handleSubItemClick = (subItem) => {
+    if (subItem.name === 'ACESSÓRIOS') {
+      // Alterna o estado de expansão de "ACESSÓRIOS"
+      setIsAccessoriesExpanded(!isAccessoriesExpanded);
+    } else if (subItem.name === 'PRATELEIRAS') {
+      // Alterna o estado de expansão de "PRATELEIRA"
+      setIsShelfExpanded(!isShelfExpanded);
+    } else {
+      // Lógica normal para subitens sem subitens adicionais
+      handleNavigation('/product', subItem.name || subItem);
+    }
+  };
+
 
   const handleItemLeave = () => {
     // Não fecha o menu ao sair do item principal
@@ -130,13 +151,26 @@ const Header = () => {
     setHoveredNestedSubItem(null);
   };
 
-  const handleTextClick = (subItem) => {
-    if (expandedSubItem === subItem) {
-      setExpandedSubItem(null);
+  const handleTextClick = (item) => {
+    if (item === 'ACESSÓRIOS' || item === 'PRATELEIRAS') {
+      return; // Não faça nada ao clicar diretamente em "ACESSÓRIOS" ou "PRATELEIRAS"
+    } else if (item === 'SERVIÇOS') {
+      handleNavigation('/servicos'); // Navega para serviços
+    } else if (item === 'SOBRE NÓS') {
+      handleNavigation('/equipe'); // Navega para sobre nós
+    } else if (item === 'CONTATO') {
+      handleNavigation('/contato'); // Navega para contato
     } else {
-      setExpandedSubItem(subItem);
+      // Se não for nenhum dos itens especiais, expande ou contrai o subitem
+      if (expandedSubItem === item) {
+        setExpandedSubItem(null); // Fecha o subitem se já estiver expandido
+      } else {
+        setExpandedSubItem(item); // Expande o subitem
+      }
     }
   };
+  
+  
 
   const handleMenuToggle = () => {
     if (burgerStatus) {
@@ -144,13 +178,7 @@ const Header = () => {
       setTimeout(() => {
         setBurgerStatus(false);
         setShowLottie(false);
-        setHoveredItem(null);
-        setMenuOpen(false);
-        setExpandedSubItem(null);
-        setLottiePosition(420);
-        setLottieMoved(false);
-        setShowContent(false);
-        setMediaTransitionVisible(false);
+        resetMenuState();
       }, 500);
     } else {
       setBurgerStatus(true);
@@ -162,6 +190,10 @@ const Header = () => {
   const handleLottieClick = () => {
     setBurgerStatus(false);
     setShowLottie(false);
+    resetMenuState();
+  };
+
+  const resetMenuState = () => {
     setHoveredItem(null);
     setMenuOpen(false);
     setExpandedSubItem(null);
@@ -169,6 +201,7 @@ const Header = () => {
     setLottieMoved(false);
     setShowContent(false);
     setMediaTransitionVisible(false);
+    setIsAccessoriesExpanded(false); // Resetar expansão de "ACESSÓRIOS"
   };
 
   const defaultOptions = {
@@ -195,66 +228,68 @@ const Header = () => {
     }
   }, [hoveredItem]);
 
-  const handleMediaMouseEnter = () => {
-    setShowButton(true);
-  };
+  const handleMediaMouseEnter = () => setShowButton(true);
+  const handleMediaMouseLeave = () => setShowButton(false);
+  const handleMouseMove = (e) => setMousePosition({ x: e.clientX, y: e.clientY });
 
-  const handleMediaMouseLeave = () => {
-    setShowButton(false);
-  };
-
-  const handleMouseMove = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleNavigation = (path, subItem) => {
-    if (subItem) {
-      navigate(`${path}/${subItem}`);
-    } else {
+  const handleNavigation = (path, product = null, subProduct = null) => {
+    if (!product) {
+      // Se for um caminho sem produto (como "contato", "serviços", etc.), apenas navegue para a rota
       navigate(path);
+    } else if ((product === 'ACESSÓRIOS' || product === 'PRATELEIRAS') && !subProduct) {
+      console.log("Não navegar ao clicar em", product);
+      return; // Sai da função sem navegar
+    } else if (subProduct) {
+      // Se for um subproduto de "ACESSÓRIOS" ou "PRATELEIRAS"
+      const newPath = `/product/${encodeURIComponent(product)}/${encodeURIComponent(subProduct)}`;
+      navigate(newPath);
+    } else {
+      // Se for outro produto principal
+      const newPath = `${path}/${encodeURIComponent(product)}`;
+      navigate(newPath);
     }
+  
     setBurgerStatus(false);
     setShowLottie(false);
-    setHoveredItem(null);
-    setMenuOpen(false);
-    setExpandedSubItem(null);
-    setLottiePosition(420);
-    setLottieMoved(false);
-    setShowContent(false);
-    setMediaTransitionVisible(false);
+    resetMenuState();
+    window.scrollTo(0, 0); // Reseta o scroll para o topo
   };
+  
+  
+  
 
   return (
     <Container>
       <RightMenu>
         <MenuContainer onClick={handleMenuToggle}>
           <MenuIcon />
-          <TextMenu>
-            <a>Menu</a>
-          </TextMenu>
+          <TextMenu><a>Menu</a></TextMenu>
         </MenuContainer>
       </RightMenu>
 
       <BurgerNav show={burgerStatus}>
         <MenuImage src="/images/logo/logomenu.png" alt="Menu Icon" />
-        <TextMenu2>
-          <a>MENU</a>
-        </TextMenu2>
+        <TextMenu2><a>MENU</a></TextMenu2>
         {prod && prod.map((pro, index) => (
-          <React.Fragment key={index}>
-            <Li
+          <Li
+            key={index}
+            ref={el => itemRefs.current[index] = el}
+            active={hoveredItem === index}
+          >
+            <a
               onMouseEnter={() => handleItemHover(index)}
               onMouseLeave={handleItemLeave}
-              active={hoveredItem === index}
-              ref={el => itemRefs.current[index] = el}
+              onClick={() => handleTextClick(pro)}  // Adiciona o onClick para navegação
+              style={{ cursor: (pro === "SERVIÇOS" || pro === "CONTATO" || pro === "SOBRE NÓS") ? "pointer" : "default" }}
             >
-              <a>{pro}</a>
-              <StyledArrow>
-                {hoveredItem === index ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
-              </StyledArrow>
-            </Li>
-          </React.Fragment>
+              {pro}
+            </a>
+            <StyledArrow>
+              {hoveredItem === index ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+            </StyledArrow>
+          </Li>
         ))}
+
         <FooterImage src="/images/logo/menu.png" alt="Footer Image" />
       </BurgerNav>
 
@@ -265,11 +300,7 @@ const Header = () => {
       )}
 
       {mediaTransitionVisible && (
-        <MediaTransitionContainer
-          onMouseEnter={handleMediaMouseEnter}
-          onMouseLeave={handleMediaMouseLeave}
-          onMouseMove={handleMouseMove}
-        >
+        <MediaTransitionContainer onMouseEnter={handleMediaMouseEnter} onMouseLeave={handleMediaMouseLeave} onMouseMove={handleMouseMove}>
           {fadeIn && nextMedia && (
             typeof nextMedia === 'string' && nextMedia.endsWith('.mp4') ? (
               <TransitionVideo src={nextMedia} autoPlay loop muted fadeIn={fadeIn} />
@@ -305,50 +336,102 @@ const Header = () => {
       <CombinedNav show={menuOpen} ref={submenuContainerRef}>
         <SubItemsWrapper>
           {hoveredItem !== null && (
-            <SubItems
-              key={hoveredItem}
-              onMouseEnter={() => {
-                if (hideTimeout.current) {
-                  clearTimeout(hideTimeout.current);
-                  hideTimeout.current = null;
-                }
-              }}
-              show={hoveredItem !== null}
-            >
-              {subItems[prod[hoveredItem]] && Object.entries(subItems[prod[hoveredItem]]).map(([subItem, nestedSubItems], subIndex) => (
-                <li
-                  key={subIndex}
-                  onMouseEnter={() => handleSubItemHover(subItem)}
-                  onMouseLeave={handleSubItemLeave}
-                  style={{ opacity: 1 }}
-                >
-                  <ItemWrapper onClick={() => handleTextClick(subItem)}>
-                    <span>{subItem}</span>
-                    <StyledArrow>
-                      {expandedSubItem === subItem ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
-                    </StyledArrow>
-                  </ItemWrapper>
-                  <NestedSubItems show={expandedSubItem === subItem}>
-                    {nestedSubItems.map((nestedSubItem, nestedIndex) => (
-                      <li
-                        key={nestedIndex}
-                        onMouseEnter={() => handleNestedSubItemHover(nestedSubItem)}
-                        onMouseLeave={handleNestedSubItemLeave}
-                        style={{ opacity: 1 }}
-                        onClick={() => {
-                          if (typeof nestedSubItem === 'object' && nestedSubItem.path) {
-                            handleNavigation(nestedSubItem.path);
-                          } else {
-                            handleNavigation('/product', nestedSubItem);
-                          }
-                        }}
-                      >
-                        {nestedSubItem.name ? nestedSubItem.name : nestedSubItem}
-                      </li>
-                    ))}
-                  </NestedSubItems>
-                </li>
-              ))}
+            <SubItems show={hoveredItem !== null}>
+              {subItems[prod[hoveredItem]] && (
+                Object.entries(subItems[prod[hoveredItem]]).map(([subItemKey, subItemValue], subIndex) => (
+                  <MenuItem
+                    key={subIndex}
+                    onMouseLeave={handleSubItemLeave}
+                  >
+                    <ItemWrapper onClick={() => setExpandedSubItem(subItemKey)}>
+                      {/* Renderiza o nome do subItem (se for objeto, pega o 'name') */}
+                      <span>{typeof subItemValue === 'object' && subItemValue.name ? subItemValue.name : subItemKey}</span>
+                      <StyledArrow>
+                        {expandedSubItem === subItemKey ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+                      </StyledArrow>
+                    </ItemWrapper>
+
+                    {/* Renderiza os subitens se o item for expandido */}
+                    {expandedSubItem === subItemKey && (
+                      <NestedSubItems show={expandedSubItem === subItemKey}>
+                        {Array.isArray(subItemValue) ? (
+                          // Caso o subItem seja um array de strings ou objetos
+                          subItemValue.map((nestedSubItem, nestedIndex) => (
+                            typeof nestedSubItem === 'object' ? (
+                              <>
+                                {/* Renderiza o nome do subitem objeto */}
+                                {/* Render "ACESSÓRIOS" with a click handler and an arrow */}
+                                <MenuItem key={nestedIndex} onClick={() => handleSubItemClick(nestedSubItem)}>
+                                  <ItemWrapper>
+                                    <span>{nestedSubItem.name}</span>
+                                    {/* Adiciona a seta ao lado direito de "ACESSÓRIOS" e "PRATELEIRA" */}
+                                    {nestedSubItem.name === 'ACESSÓRIOS' && (
+                                      <StyledArrow>
+                                        {isAccessoriesExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                                      </StyledArrow>
+                                    )}
+                                    {nestedSubItem.name === 'PRATELEIRAS' && (
+                                      <StyledArrow>
+                                        {isShelfExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                                      </StyledArrow>
+                                    )}
+                                  </ItemWrapper>
+                                </MenuItem>
+
+
+                                {/* Renderiza os subitens dentro do objeto somente se estiver expandido */}
+                                {nestedSubItem.name === 'ACESSÓRIOS' && isAccessoriesExpanded && (
+                                  <NestedSubItems show={true}>
+                                    {nestedSubItem.subItems.map((subNestedItem, subNestedIndex) => (
+                                      <MenuItem
+                                        key={subNestedIndex}
+                                        onClick={() => handleNavigation('/product', 'ACESSÓRIOS', subNestedItem)}  // Passa o nome do subitem para ProductPage
+                                      >
+                                        <span>{subNestedItem}</span>
+                                      </MenuItem>
+                                    ))}
+                                  </NestedSubItems>
+                                )}
+
+                                {nestedSubItem.name === 'PRATELEIRAS' && isShelfExpanded && (
+                                  <NestedSubItems show={true}>
+                                    {nestedSubItem.subItems.map((subNestedItem, subNestedIndex) => (
+                                      <MenuItem
+                                        key={subNestedIndex}
+                                        onClick={() => handleNavigation('/product', 'PRATELEIRAS', subNestedItem)}  // Passa o nome do subitem para ProductPage
+                                      >
+                                        <span>{subNestedItem}</span>
+                                      </MenuItem>
+                                    ))}
+                                  </NestedSubItems>
+                                )}
+                              </>
+                            ) : (
+                              // Renderiza se for uma string simples
+                              <MenuItem
+                                key={nestedIndex}
+                                onClick={() => handleNavigation('/product', nestedSubItem)}  // Navega para ProductPage com o subitem simples
+                              >
+                                <span>{nestedSubItem}</span>
+                              </MenuItem>
+                            )
+                          ))
+                        ) : (
+                          // Caso o subItem seja um objeto com 'subItems' (por exemplo, "ACESSÓRIOS")
+                          subItemValue.subItems.map((subNestedItem, subNestedIndex) => (
+                            <MenuItem
+                              key={subNestedIndex}
+                              onClick={() => handleNavigation('/product', 'ACESSÓRIOS', subNestedItem)}  // Garante que "ACESSÓRIOS" seja o produto e o subNestedItem seja o subProduto
+                            >
+                              <span>{subNestedItem}</span>
+                            </MenuItem>
+                          ))
+                        )}
+                      </NestedSubItems>
+                    )}
+                  </MenuItem>
+                ))
+              )}
             </SubItems>
           )}
         </SubItemsWrapper>
@@ -356,9 +439,7 @@ const Header = () => {
 
       <Overlay show={burgerStatus} onClick={handleMenuToggle} />
       <LogoContainer>
-        <a href="/">
-          <img src="/images/logo/header2.png" alt="Logo" style={{ width: '170px', height: 'auto', marginRight:100 }} />
-        </a>
+        <a href="/"><img src="/images/logo/header2.png" alt="Logo" style={{ width: '200px', height: 'auto', marginRight: 120 }} /></a>
       </LogoContainer>
     </Container>
   );
@@ -366,54 +447,30 @@ const Header = () => {
 
 export default Header;
 
-// Estilos e animações
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+// Styled components
+const fadeInAnimation = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
 `;
 
-const fadeOut = keyframes`
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0.
-  }
+const fadeOutAnimation = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; }
 `;
 
 const fadeInSlide = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 `;
 
 const fadeOutSlide = keyframes`
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
 `;
 
 const zoomIn = keyframes`
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.05); /* Ajuste a intensidade do zoom conforme necessário */
-  }
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
 `;
 
 const Container = styled.div`
@@ -426,45 +483,8 @@ const Container = styled.div`
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1;
-  background: linear-gradient(to bottom, rgba(36,37,37), rgba(0, 0, 0, 0));
-`;
-
-const MenuWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const MenuImage = styled.img`
-  width: 230px;
-  height: auto;
-  margin-left: 50px;
-`;
-
-const TextMenu = styled.div`
-  font-size: 14px;
-  a {
-    font-weight: 600;
-    text-transform: uppercase;
-    color: #fff;
-    font-family: 'Brmalls';
-    margin-left: 5px;
-  }
-`;
-
-const TextMenu2 = styled.div`
-  font-size: 15px;
-  a {
-    color: #fff;
-    font-family: 'Ginza Heavy', sans-serif;
-  }
-`;
-
-const LogoContainer = styled.div`
-  flex: 1;
-  display: flex;
-  justify-content: center;
+  z-index: 1001;
+  background: linear-gradient(to bottom, rgba(36, 37, 37), rgba(0, 0, 0, 0));
 `;
 
 const RightMenu = styled.div`
@@ -483,17 +503,17 @@ const MenuContainer = styled.div`
   transition: background-color 0.3s ease-in-out;
   border-radius: 5px;
   bottom: 6px;
-   right: -5px;
+  right: -5px;
   &::after {
     content: '';
     position: absolute;
-    top: -5px; /* Ajuste conforme necessário */
-    bottom: -5px; /* Ajuste conforme necessário */
-    left: -5px; /* Ajuste conforme necessário */
-    right: -5px; /* Ajuste conforme necessário */
+    top: -5px;
+    bottom: -5px;
+    left: -5px;
+    right: -5px;
     background-color: transparent;
     transition: background-color 0.3s ease-in-out;
-    z-index: -1; /* Certifique-se de que o fundo esteja atrás do texto/imagem */
+    z-index: -1;
     border-radius: 5px;
   }
 
@@ -506,13 +526,32 @@ const MenuContainer = styled.div`
     height: 24px;
     color: #fff;
   }
+`;
 
-  ${TextMenu} {
+const TextMenu = styled.div`
+  font-size: 14px;
+  a {
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #fff;
+    font-family: 'Ginza Heavy', sans-serif;
     margin-left: 5px;
-    font-family: 'Brmalls';
   }
 `;
 
+const TextMenu2 = styled.div`
+  font-size: 15px;
+  a {
+    color: #fff;
+    font-family: 'Ginza Heavy', sans-serif;
+  }
+`;
+
+const LogoContainer = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+`;
 
 const BurgerNav = styled.div`
   position: fixed;
@@ -529,6 +568,7 @@ const BurgerNav = styled.div`
   text-align: start;
   transform: ${(props) => (props.show ? "translateX(0)" : "translateX(-100%)")};
   transition: transform 0.2s ease-in;
+  font-family: 'Ginza Heavy', sans-serif;
   li {
     padding-top: 25px;
     a {
@@ -539,14 +579,55 @@ const BurgerNav = styled.div`
   }
 `;
 
-const CloseWrapper = styled.div`
-  position: absolute;
-  top: 20px;
-  right: -70px;
-  z-index: 15;
+const Li = styled.li`
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  opacity: ${(props) => (props.active ? 1 : 0.3)};
+  border-radius: 5px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    bottom: -5px;
+    left: -5px;
+    right: -5px;
+    background-color: transparent;
+    transition: background-color 0.3s ease-in-out;
+    z-index: -1;
+  }
+
+  a {
+    color: ${(props) => (props.active ? "#fff" : "#d4d4d4")};
+  }
+
+  &:hover a {
+    color: #fff;
+    opacity: 1;
+  }
+`;
+
+const StyledArrow = styled.div`
   cursor: pointer;
+  margin-left: 10px;
   display: flex;
   align-items: center;
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  &.expanded svg {
+    transform: rotate(180deg);
+  }
+`;
+
+const MenuImage = styled.img`
+  width: 230px;
+  height: auto;
+  margin-left: 50px;
 `;
 
 const LottieContainer = styled.div`
@@ -555,6 +636,38 @@ const LottieContainer = styled.div`
   left: ${(props) => props.lottiePosition}px;
   z-index: 15;
   cursor: pointer;
+`;
+
+const MediaTransitionContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 800px;
+  width: calc(100% - 800px);
+  height: 100%;
+  z-index: 5;
+  background-color: black;
+`;
+
+const TransitionImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: ${(props) => (props.fadeIn || !props.fadeOut ? 1 : 0)};  // Garante que a imagem sempre fique visível
+  animation: ${(props) => (props.fadeIn ? fadeInAnimation : props.fadeOut ? fadeOutAnimation : 'none')} 0.2s ease-in-out;
+`;
+
+const TransitionVideo = styled.video`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: ${(props) => (props.fadeIn || !props.fadeOut ? 1 : 0)};  // Garante que o vídeo sempre fique visível
+  animation: ${(props) => (props.fadeIn ? fadeInAnimation : props.fadeOut ? fadeOutAnimation : 'none')} 0.2s ease-in-out;
 `;
 
 const Overlay = styled.div`
@@ -568,64 +681,31 @@ const Overlay = styled.div`
   display: ${(props) => (props.show ? "block" : "none")};
 `;
 
-const CustomMenuContainer = styled.div`
-  cursor: pointer;
+const FooterImage = styled.img`
+  width: 12%;
+  margin-top: auto;
+`;
+
+const HoverButton = styled.div`
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
   color: #fff;
-  width: 100px;
-  height: 100px;
+  padding: 10px 20px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  &:hover {
-    background-color: #404040;
-    border-radius: 5px;
-    padding: 5px;
-  }
-`;
-
-const Li = styled.li`
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  opacity: ${(props) => (props.active ? 1 : 0.3)};
- border-radius: 5px;
-  &::after {
-    content: '';
-    position: absolute;
-    top: -5px; /* Ajuste conforme necessário */
-    bottom: -5px; /* Ajuste conforme necessário */
-    left: -5px; /* Ajuste conforme necessário */
-    right: -5px; /* Ajuste conforme necessário */
-    background-color: transparent;
-    transition: background-color 0.3s ease-in-out;
-    z-index: -1; /* Certifique-se de que o fundo esteja atrás do texto/imagem */
-  }
-
-  &:hover::after {
-    
-  }
-
-  a {
-    color: ${(props) => (props.active ? "#fff" : "#d4d4d4")};
-  }
-
-  &:hover a {
-    color: #fff;
-    opacity: 1;
-  }
-`;
-
-
-const StyledArrow = styled.div`
   cursor: pointer;
-  margin-left: 10px;
+  animation: ${fadeInAnimation} 0.5s ease-in-out;
+`;
+
+const HoverImage = styled.img`
+  position: fixed;
+  width: 380px;
+  height: 200px;
+  z-index: 1;
 `;
 
 const CombinedNav = styled.div`
@@ -652,21 +732,17 @@ const SubItemsWrapper = styled.div`
 
 const SubItems = styled.ul`
   list-style-type: none;
-  padding: 0;
-  margin-top: 10px;
-  width: 100%;
+  padding-left: 30px;  // Faz o submenu (CÂMARA FRIA) ficar mais à direita, mas ainda abaixo do GABINETES
+  margin-top: 5px;
+  font-family: 'Brmalls';
+   
   li {
-    padding: 10px 0;
-    font-family: 'Ginza Heavy', sans-serif;
+    padding: 5px 0;
     color: #d4d4d4;
     cursor: pointer;
-    animation: ${fadeInSlide} 0.5s ease-out;
-    display: flex;
-    flex-direction: column;
-    margin-left: 20px;
+    
     &:hover {
       color: #fff;
-      opacity: 1;
     }
   }
 `;
@@ -675,18 +751,28 @@ const ItemWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;  // Adiciona o cursor de ponteiro ao passar o mouse
+  font-family: 'Ginza Heavy', sans-serif;
+`;
+
+const MenuItem = styled.li`
+  font-family: 'Brmalls';
+  cursor: pointer;
+  padding: 10px 0;
+  margin-left: 0px;
+  display: block;
 `;
 
 const NestedSubItems = styled.ul`
   list-style-type: none;
   padding-left: 20px;
   margin: 5px 0 5px 20px;
-  max-height: ${(props) => (props.show ? '1000px' : '0')};
+  max-height: ${(props) => (props.show ? '1000px' : '0')}; /* Garantir que os subitens sejam visíveis */
   overflow: hidden;
   transition: max-height 0.5s ease-out;
   li {
     padding: 5px 0;
-    font-family: 'Ginza Heavy', sans-serif;
+    font-size: 13px;
     color: #d4d4d4;
     cursor: pointer;
     animation: ${(props) => (props.show ? css`${fadeInSlide} 0.5s ease-out` : css`${fadeOutSlide} 0.5s ease-out`)};
@@ -696,115 +782,5 @@ const NestedSubItems = styled.ul`
       color: #fff;
       opacity: 1;
     }
-  }
-`;
-
-const FooterImage = styled.img`
-  width: 12%;
-  margin-top: auto;
-`;
-
-const ProductTextWrapper = styled.div`
-  margin: 10px 0;
-`;
-
-const ProductText = styled.div`
-  height: auto;
-  cursor: pointer;
-  color: #fff;
-  font-family: 'Ginza Heavy', sans-serif;
-  &:hover {
-    border: 0.1px solid #404040;
-    background-color: #404040;
-    border-radius: 10px;
-    padding: 5px;
-  }
-`;
-
-const ZoomImage = styled.img`
-  animation: ${zoomIn} 20s infinite alternate;
-`;
-
-const MediaTransitionContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 800px;
-  width: calc(100% - 800px);
-  height: 100%;
-  z-index: 5;
-  background-color: black; /* Para garantir que o fundo não vaze */
-`;
-
-const TransitionImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: ${(props) => (props.fadeIn || props.fadeOut ? 0 : 1)};
-  animation: ${(props) => (props.fadeIn ? fadeInAnimation : props.fadeOut ? fadeOutAnimation : 'none')} 0.2s ease-in-out;
-`;
-
-const TransitionVideo = styled.video`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: ${(props) => (props.fadeIn || props.fadeOut ? 0 : 1)};
-  animation: ${(props) => (props.fadeIn ? fadeInAnimation : props.fadeOut ? fadeOutAnimation : 'none')} 0.2s ease-in-out;
-`;
-
-const HoverButton = styled.div`
-  position: fixed;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  padding: 10px 20px;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  animation: ${fadeIn} 0.5s ease-in-out;
-`;
-
-const HoverImage = styled.img`
-  position: fixed;
-  width: 380px; /* Ajuste o tamanho da imagem conforme necessário */
-  height: 200px; /* Ajuste o tamanho da imagem conforme necessário */
-  z-index: 1;
-`;
-
-const fadeInAnimation = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const fadeOutAnimation = keyframes`
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-`;
-
-const zoomInOut = keyframes`
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
   }
 `;

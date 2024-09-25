@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, useViewportScroll, useTransform } from 'framer-motion';
 import styled from 'styled-components';
-import ThreeModelViewer from '../../components/ThreeModelViewer';
+import ThreeModelViewer from '../../assets/GLB/Balcao/BalcaoHz';
 
 const Video = () => {
   const { scrollYProgress } = useViewportScroll();
